@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Houses</title>
+</head>
+<body>
+{% for house in houses%}
+<ul>
+    <li>House Id : {{house.id}}</li>
+    <li>Date posted : {{house.date_posted}}</li>
+    <li>Price : {{house.price}}</li>
+    <li>No of Beds: {{house.beds}}</li>
+    <li>No of baths: {{house.baths}}</li>
+    <li>Square Feet: {{house.sqft_house}}</li>
+    <li>Sqaure Feet Lot: {{house.sqft_lot}}</li>
+    <li>Floors: {{house.floors}}</li>
+    <li>Condition: {{house.condition}}</li>
+    <br>
+</ul>
+{% endfor %}
+</h2>
+</body>
+</html>
