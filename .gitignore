@@ -90,3 +90,6 @@ ENV/
 
 # PyCharm .idea
 .idea/
+
+frontend/.idea/*
+backend/.idea/*

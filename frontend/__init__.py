@@ -1,4 +1,4 @@
 from flask import Flask
 
 app = Flask(__name__)
-from folsom import basic
+from frontend import basic
