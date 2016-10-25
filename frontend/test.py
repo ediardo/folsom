@@ -29,14 +29,5 @@ for line in my_csv.readlines():
     h.condition = values[10]
     session.add(h)
 
-
-# engine = create_engine('sqlite:///:memory:', echo=True)
-# Base.metadata.create_all(engine)
-# Session = sessionmaker(bind = engine)
-# session = Session()
-# hdate = datetime.datetime.strptime('20141118T00000'.split('T')[0], "%Y%m%d").date()
-# h = HouseRecord(date_posted=hdate, floors=2, beds=1, baths=1.5)
-# print(h)
-# session.add(h)
 #print(session.dirty)
 session.commit()
