@@ -6,13 +6,14 @@ from sqlalchemy import Date
 from sqlalchemy import Float
 from sqlalchemy import SmallInteger
 from sqlalchemy.ext.declarative import declarative_base
+import uuid
 
 Base = declarative_base()
 
 
 class HouseRecord(Base):
     __tablename__ = 'house_records'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), primary_key=True)
     date_posted = Column(Date, primary_key=False)
     price = Column(Integer, primary_key=False)
     beds = Column(SmallInteger, primary_key=False)

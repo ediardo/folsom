@@ -3,6 +3,7 @@ from models.house_record import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
+import uuid
 
 #engine = create_engine('sqlite:///:memory:', echo=True)
 engine = create_engine('sqlite:///house_record.db', echo=True)
@@ -16,6 +17,8 @@ for line in my_csv.readlines():
     if values[0] == 'id':
         continue
     h = HouseRecord()
+    h.id = uuid.uuid4()
+    print h.id
     h.date_posted = datetime.datetime.strptime(values[1].split('T')[0],"%Y%m%d").date()
     h.price = values[2]
     h.beds = values[3]
