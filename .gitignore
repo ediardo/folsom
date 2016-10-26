@@ -88,6 +88,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
+
+.DS_STORE
+*.swp
+static/*
 # PyCharm .idea
 .idea/
 
