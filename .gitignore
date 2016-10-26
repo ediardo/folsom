@@ -92,4 +92,8 @@ ENV/
 .DS_STORE
 *.swp
 static/*
-.idea
+# PyCharm .idea
+.idea/
+
+frontend/.idea/*
+backend/.idea/*
