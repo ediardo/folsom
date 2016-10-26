@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     watch: {
       css: {
         files: [
-                'app/*.js'
+                '../app/*.js'
                ],
         tasks: ['concat']
       }
@@ -26,12 +26,12 @@ module.exports = function(grunt) {
       },
       dist: {
         src: [
-              'app/app.module.js',
-              'app/*.service.js',
-              'app/*.directive.js',
-              'app/*.controller.js',
+              '../app/app.module.js',
+              '../app/*.service.js',
+              '../app/*.directive.js',
+              '../app/*.controller.js',
         ],
-        dest: 'static/js/app.concat.js'
+        dest: 'js/app.concat.js'
       }
     }
   });
