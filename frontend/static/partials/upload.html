@@ -5,9 +5,9 @@
       <h3 class="panel-title">Select a file</h3>
     </div>
     <div class="panel-body">
-      <form action="">
-        <input type="file" name="pic" accept="image/*">
-          <input type="button" class="btn btn-default">
+      <form action="http://127.0.0.1:5000/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="csv" required>
+        <input type="submit" class="btn btn-default" value="Upload">
       </form>
     </div>
   </div>

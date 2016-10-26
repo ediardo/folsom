@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, request, Response
 app = Flask(__name__)
 app.debug = True
 
@@ -13,11 +13,11 @@ def index():
 def login():
     return render_template('partials/login.html')
 
-@app.route('/upload')
-# POST saves the file
-# GET render HTML upload form
+@app.route('/upload', methods=['POST'])
 def upload():
-    return 'upload'
+    import pb
+    pdb.set_trace()
+    print request
 
 
 if __name__ == "__main__":
