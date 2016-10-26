@@ -5,6 +5,7 @@ from sqlalchemy import Date
 from sqlalchemy import Float
 from sqlalchemy import SmallInteger
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from base import Base
 
 class HouseRecord(Base):
@@ -19,3 +20,4 @@ class HouseRecord(Base):
     sqft_lot = Column(Integer)
     floors = Column(Float)
     condition = Column(SmallInteger)
+    results = relationship("Result", backref="house_records")

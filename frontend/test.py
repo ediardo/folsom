@@ -8,29 +8,25 @@ from sqlalchemy.exc import IntegrityError
 import datetime
 import uuid
 import hashlib
+from database_handler import DatabaseHandler
 
-#engine = create_engine('sqlite:///:memory:', echo=True)
-engine = create_engine('sqlite:///house_record.db', echo=True)
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind = engine)
-session = Session()
+handler = DatabaseHandler('sqlite:///house_record.db')
+#handler = DatabaseHandler('sqlite:///:memory:')
 
 #users
 users = ['admin', 'user', 'anna', 'jake']
 try:
     for u in users:
         pwd_hash = hashlib.sha256("secret_pass_" + u).hexdigest()
-        user = User(username=u, password=pwd_hash)
-        session.add(user)
-    session.commit()
+        handler.save_user(u, pwd_hash)
 except IntegrityError:
-    #users alrady in db, recreating session
-    session = Session()
+    #users already in db, recreating session
+    pass
 
 #records
 my_csv = open('kc_house_data.csv', 'r')
 i = 0
-record_ids = []
+records = []
 for line in my_csv.readlines():
     values = line.replace('"',"").split(',')[:11]
     if values[0] == 'id':
@@ -47,15 +43,17 @@ for line in my_csv.readlines():
     h.floors = values[7]
     h.condition = values[10]
     i += 1
-    record_ids.append(h.id)
-    session.add(h)
-session.commit()
+    records.append(h)
+    if i > 20:
+        break
+
+handler.save_records(records)
+record_ids = [r.id for r in records]
 
 #results
-res = ["a", "b", "c"]
+results = ["a", "b", "c"]
 i = 0
 for r_id in record_ids:
-    r = Result(id=r_id, result=res[i%len(res)])
-    i += 1
-    session.add(r)
-session.commit()
+    handler.save_result(results[i%len(results)], r_id)
+
+handler.get_data_for_user(users[0])
