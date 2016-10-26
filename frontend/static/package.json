@@ -1,0 +1,32 @@
+{
+  "name": "folsom",
+  "version": "1.0.0",
+  "description": "OSIC Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ediardo/folsom.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ediardo/folsom/issues"
+  },
+  "homepage": "https://github.com/ediardo/folsom#readme",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-route": "^1.5.8",
+    "angular-ui-bootstrap": "^2.2.0",
+    "bootstrap": "^3.3.7",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0"
+  },
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "grunt-contrib-copy": "^1.0.0"
+  }
+}

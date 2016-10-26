@@ -91,3 +91,5 @@ ENV/
 
 .DS_STORE
 *.swp
+static/*
+.idea
