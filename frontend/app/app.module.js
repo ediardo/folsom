@@ -2,16 +2,18 @@
   'use strict';
 
   angular
-    .module('folsom', ['ngRoute'])
+    .module('folsom', ['ngRoute', 'ngCookies'])
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
       $routeProvider
         .when('/', {
           templateUrl: '/static/partials/index.html?anticache',
-          controller: 'mainCtrl'
+          controller: 'mainCtrl',
+          requiredAuth: true
         })
         .when('/upload', {
           templateUrl: '/static/partials/upload.html?anticache=',
-          controller: 'uploadCtrl'
+          controller: 'uploadCtrl',
+          requiredAuth: true
         })
         .when('/login', {
           templateUrl: '/static/partials/login.html?anticache=',
@@ -19,16 +21,6 @@
         })
 
       $locationProvider.html5Mode({ enabled: true, requireBase: false });
-    }])
-    .service('apiService', ['$http', function($http) {
-
-      var baserUrl = '/';
-      
-      this.uploadFile = function(file) {
-        console.log('uploading');
-      }
-
-
     }]);
 
 })();
