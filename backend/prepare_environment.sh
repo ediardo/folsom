@@ -7,6 +7,7 @@ pip install --upgrade --force pip
 pip install python-barbicanclient
 pip install python-keystoneclient
 
+export PYTHONPATH=$PYTHONPATH:..
 # don't forget to copy openrc to /opt
 echo "source /etc/kolla/admin-openrc.sh" >> /root/.bashrc
 # load new profile
