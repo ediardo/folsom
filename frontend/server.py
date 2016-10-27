@@ -90,10 +90,11 @@ def view():
                        "condition": result.condition}
             houserecords.append(data)
         print houserecords
-        data = json.dumps({"message": houserecords})
+        #data = json.dumps({"message": houserecords})
         resp = Response(data, status=200, mimetype='application/json')
         return resp
     except Exception as e:
+        print e
         resp = Response( status=500)
         return resp
 
