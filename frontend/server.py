@@ -4,8 +4,8 @@ import os
 import datetime
 import json
 
-from database_handler import DatabaseHandler
-from models.house_record import HouseRecord
+from database.database_handler import DatabaseHandler
+from database.models.house_record import HouseRecord
 
 app = Flask(__name__)
 app.debug = True
