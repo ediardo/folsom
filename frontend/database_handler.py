@@ -44,3 +44,8 @@ class DatabaseHandler():
         r = Result(id=record_id, result=result, action=action)
         session.add(r)
         session.commit()
+
+    def get_houserecords(self):
+        session = self.make_session()
+        results = session.query(HouseRecord)
+        return results
