@@ -8,6 +8,9 @@ from sqlalchemy.exc import IntegrityError
 import datetime
 import uuid
 import hashlib
+import pika
+import sys
+import json
 from database_handler import DatabaseHandler
 
 handler = DatabaseHandler('sqlite:///house_record.db')
@@ -49,6 +52,29 @@ for line in my_csv.readlines():
 
 handler.save_records(records)
 record_ids = [r.id for r in records]
+
+#send messages to rabbitmq per each row saved in db
+for r_id in record_ids:
+    data = {
+    "id": r_id,
+    "action": "default"
+    }
+    message = json.dumps(data)
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        host='localhost'))
+    channel = connection.channel()
+
+    res = channel.queue_declare(queue='task_queue', durable=True, passive=True)
+    channel.basic_publish(exchange='',
+                      routing_key='task_queue',
+                      body=message,
+                      properties=pika.BasicProperties(
+                         delivery_mode = 2,
+                      ))
+    print("Sent %r" % message)
+    print 'Messages in queue %d' % res.method.message_count
+    connection.close()
 
 #results
 results = ["a", "b", "c"]
