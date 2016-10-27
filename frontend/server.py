@@ -7,6 +7,9 @@ import json
 from database.database_handler import DatabaseHandler
 from database.models.house_record import HouseRecord
 
+import pika
+from pika.exceptions import ConnectionClosed, ChannelClosed
+
 app = Flask(__name__)
 app.debug = True
 
@@ -67,6 +70,36 @@ def upload():
         #send messages to rabbitmq queue
         #for record in records:
         #    message = json.dumps({"uuid": record.id, "action": "default"})
+
+        # send messages to rabbitmq per each row saved in db
+
+        record_ids = [r.id for r in records]
+
+        try:
+            for r_id in record_ids:
+                data = {
+                    "id": r_id,
+                    "action": "default"
+                }
+                message = json.dumps(data)
+
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host='localhost'))
+                channel = connection.channel()
+
+                res = channel.queue_declare(queue='task_queue', durable=True)
+                channel.basic_publish(exchange='',
+                                      routing_key='task_queue',
+                                      body=message,
+                                      properties=pika.BasicProperties(
+                                          delivery_mode=2,
+                                      ))
+                print("Sent %r" % message)
+                print 'Messages in queue %d' % res.method.message_count
+                connection.close()
+        except (ConnectionClosed, ChannelClosed) as e:
+            print("Connecting with queue failed!")
+
         return resp
     else:
         data = json.dumps({"message": "Only csv is supported"})
