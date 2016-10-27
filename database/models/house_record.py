@@ -8,6 +8,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from base import Base
 
+
 class HouseRecord(Base):
     __tablename__ = 'house_records'
     id = Column(String(36), primary_key=True)
