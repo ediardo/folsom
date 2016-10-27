@@ -1,16 +1,11 @@
 from models.house_record import HouseRecord
-from models.user import User
-from models.result import Result
-from models.base import Base
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import IntegrityError
 import datetime
 import uuid
 import hashlib
 import pika
-import sys
 import json
+from pika.exceptions import ConnectionClosed, ChannelClosed
 from database_handler import DatabaseHandler
 
 handler = DatabaseHandler('sqlite:///house_record.db')
@@ -53,28 +48,35 @@ for line in my_csv.readlines():
 handler.save_records(records)
 record_ids = [r.id for r in records]
 
+#test retrieving records
+for id in record_ids[:5]:
+    print(handler.get_record_by_id(id))
+
 #send messages to rabbitmq per each row saved in db
-for r_id in record_ids:
-    data = {
-    "id": r_id,
-    "action": "default"
-    }
-    message = json.dumps(data)
+try:
+    for r_id in record_ids:
+        data = {
+        "id": r_id,
+        "action": "default"
+        }
+        message = json.dumps(data)
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
-    channel = connection.channel()
+        connection = pika.BlockingConnection(pika.ConnectionParameters(
+            host='localhost'))
+        channel = connection.channel()
 
-    res = channel.queue_declare(queue='task_queue', durable=True, passive=True)
-    channel.basic_publish(exchange='',
-                      routing_key='task_queue',
-                      body=message,
-                      properties=pika.BasicProperties(
-                         delivery_mode = 2,
-                      ))
-    print("Sent %r" % message)
-    print 'Messages in queue %d' % res.method.message_count
-    connection.close()
+        res = channel.queue_declare(queue='task_queue', durable=True, passive=True)
+        channel.basic_publish(exchange='',
+                          routing_key='task_queue',
+                          body=message,
+                          properties=pika.BasicProperties(
+                             delivery_mode = 2,
+                          ))
+        print("Sent %r" % message)
+        print 'Messages in queue %d' % res.method.message_count
+        connection.close()
+except (ConnectionClosed, ChannelClosed) as e:
+    print("Connecting with queue failed!")
 
 #results
 results = ["a", "b", "c"]

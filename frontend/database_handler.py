@@ -21,10 +21,13 @@ class DatabaseHandler():
         session.commit()
 
     def get_user_id_by_login(self, login):
-        print login
         session = self.make_session()
         id, = session.query(User.id).filter(User.username == login)
         return id[0]
+
+    def get_record_by_id(self, id):
+        session = self.make_session()
+        return session.query(HouseRecord).get(id)
 
     def get_data_for_user(self, login):
         user_id = self.get_user_id_by_login(login)
