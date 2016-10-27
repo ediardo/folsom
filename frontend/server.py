@@ -3,6 +3,9 @@ import uuid
 import os
 import datetime
 import json
+import sys
+print sys.path
+sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 
 from database.database_handler import DatabaseHandler
 from database.models.house_record import HouseRecord
@@ -13,7 +16,7 @@ from pika.exceptions import ConnectionClosed, ChannelClosed
 app = Flask(__name__)
 app.debug = True
 
-upload_folder = '/opt/stack/folsom'
+upload_folder = os.path.dirname(os.path.realpath(__name__))
 app.config['upload_folder'] = upload_folder
 
 handler = DatabaseHandler('sqlite:///house_record.db')
@@ -131,4 +134,4 @@ def view():
         return resp
 
 if __name__ == "__main__":
-    app.run(host='192.168.33.12', port=8181, debug=True)
+    app.run(host='0.0.0.0', port=8181, debug=True)
