@@ -1,12 +1,14 @@
-from models.house_record import HouseRecord
-from sqlalchemy.exc import IntegrityError
 import datetime
-import uuid
 import hashlib
-import pika
 import json
+import uuid
+
+import pika
 from pika.exceptions import ConnectionClosed, ChannelClosed
-from database_handler import DatabaseHandler
+from sqlalchemy.exc import IntegrityError
+
+from database.database_handler import DatabaseHandler
+from database.models.house_record import HouseRecord
 
 handler = DatabaseHandler('sqlite:///house_record.db')
 #handler = DatabaseHandler('sqlite:///:memory:')
