@@ -3,13 +3,20 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.house_record import Base
 import uuid
+import os
+import datetime
+import json
 from models.house_record import HouseRecord
+
 app = Flask(__name__)
 app.debug = True
+upload_folder = '/opt/stack/new/folsom'
+app.config['upload_folder'] = upload_folder
 
 engine = create_engine('sqlite:///house_record.db', echo=True)
 Base.metadata.create_all(engine)
 DBSession = sessionmaker(bind=engine)
+
 
 # Routes
 
@@ -25,12 +32,19 @@ def login():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['file']
-    if file['csv'] == 'text/csv':
-        filename = file['filename']
-        my_csv = open(filename, 'r')
+    file = request.files['csv']
+    if file.content_type == 'text/csv':
+        filename = file.filename
+        try:
+            file.save(os.path.join(app.config['upload_folder'], filename))
+        except Exception as e:
+            data = json.dumps({"message": "error when saving file on disk"})
+            resp = Response(data, status=511, mimetype='application/json')
+            return resp
+
         records = []
         session = DBSession()
+        my_csv = open(app.config['upload_folder']+"/"+filename, 'r')
         for line in my_csv.readlines():
             values = line.replace('"', "").split(',')[:11]
             if values[0] == 'id':
@@ -48,15 +62,27 @@ def upload():
             h.condition = values[10]
             session.add(h)
             session.commit()
+
             records.append(h)
 
+        # send messages to rabbitmq queue
+        #for record in records:
+        #    data = json.dumps({"uuid": record.id})
 
-        print filename
+        #check to if data has been stored
+        session = DBSession()
+        results = session.query(HouseRecord)
+        for result in results:
+            print result.price
 
-        print("csv file")
+        data = json.dumps({"message": "data stored"})
+        resp = Response(data, status=200, mimetype='application/json')
+        return resp
 
     else:
-        return "not csv file"
+        data = json.dumps({"message": "Only csv is supported"})
+        resp = Response(data, status=501, mimetype='application/json')
+        return resp
 
 if __name__ == "__main__":
     app.run(host='192.168.33.12', port=8181, debug=True)
