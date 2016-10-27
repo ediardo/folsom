@@ -64,16 +64,31 @@ def upload():
             session.commit()
 
             records.append(h)
+        session.close()
 
         # send messages to rabbitmq queue
         #for record in records:
         #    data = json.dumps({"uuid": record.id})
 
-        #check to if data has been stored
+        # houserecords contains list retrieved from database
+        # will be used by view page
         session = DBSession()
         results = session.query(HouseRecord)
+        houserecords = []
         for result in results:
-            print result.price
+            data ={"id":result.id,
+                   "date_posted": result.date_posted,
+                   "price": result.price,
+                   "beds": result.beds,
+                   "baths": result.baths,
+                   "sqft_house": result.sqft_house,
+                   "sqft_lot": result.sqft_lot,
+                   "floors": result.floors,
+                   "condition": result.condition}
+            houserecords.append(data)
+        session.close()
+
+        print houserecords
 
         data = json.dumps({"message": "data stored"})
         resp = Response(data, status=200, mimetype='application/json')
