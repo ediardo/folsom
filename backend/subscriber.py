@@ -1,7 +1,7 @@
 import time
+import os
 import pika
 import json
-from daemon import runner
 
 class App():
     def __init__(self):
@@ -10,8 +10,12 @@ class App():
         self.stderr_path = '/dev/tty'
         self.pidfile_path =  '/tmp/foo.pid'
         self.pidfile_timeout = 5
+        self.mq_host = os.getenv("MQ_HOST") or 'localhost'
+        self.mq_port = os.getenv("MQ_PORT") or 5672
+
     def do_work(self, channel):
-            print('Waiting for messages. To exit press CTRL+C')
+            print('Waiting for messages on host ' + self.mq_host + \
+                  ':' + str(self.mq_port) + '. To exit press CTRL+C')
 
             def callback(ch, method, properties, body):
                 data = json.loads(body)
@@ -24,8 +28,12 @@ class App():
 
             channel.start_consuming()
     def run(self):
+        if not self.mq_host or not self.mq_port:
+            self.mq_host = 'localhost'
+            self.mq_port = 5672
         connection = pika.BlockingConnection(pika.ConnectionParameters(
-                                                         host='localhost'))
+                                                         host=self.mq_host,
+                                                         port=int(self.mq_port)))
         channel = connection.channel()
         channel.queue_declare(queue='task_queue', durable=True)
 
@@ -34,5 +42,4 @@ class App():
             #sleep?
 
 app = App()
-daemon_runner = runner.DaemonRunner(app)
-daemon_runner.do_action()
+app.run()

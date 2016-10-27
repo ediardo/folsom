@@ -1,0 +1,6 @@
+pika
+python-daemon
+cryptography
+python-keystoneclient
+python-barbicanclient
+sqlalchemy
