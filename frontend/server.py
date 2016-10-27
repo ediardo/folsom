@@ -80,7 +80,7 @@ def view():
         houserecords = []
         for result in results:
             data ={"id":result.id,
-                   "date_posted": result.date_posted,
+                   "date_posted": str(result.date_posted),
                    "price": result.price,
                    "beds": result.beds,
                    "baths": result.baths,
@@ -89,8 +89,7 @@ def view():
                    "floors": result.floors,
                        "condition": result.condition}
             houserecords.append(data)
-        print houserecords
-        #data = json.dumps({"message": houserecords})
+        data = json.dumps({"message": houserecords})
         resp = Response(data, status=200, mimetype='application/json')
         return resp
     except Exception as e:
