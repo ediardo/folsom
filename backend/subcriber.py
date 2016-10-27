@@ -1,6 +1,7 @@
 import time
-from daemon import runner
 import pika
+import json
+from daemon import runner
 
 class App():
     def __init__(self):
@@ -13,7 +14,8 @@ class App():
             print('Waiting for messages. To exit press CTRL+C')
 
             def callback(ch, method, properties, body):
-                print("Received %r" % body)
+                data = json.loads(body)
+                print(data['id'])
                 ch.basic_ack(delivery_tag = method.delivery_tag)
 
             channel.basic_qos(prefetch_count=1)
