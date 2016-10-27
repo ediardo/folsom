@@ -65,7 +65,7 @@ try:
             host='localhost'))
         channel = connection.channel()
 
-        res = channel.queue_declare(queue='task_queue', durable=True, passive=True)
+        res = channel.queue_declare(queue='task_queue', durable=True)
         channel.basic_publish(exchange='',
                           routing_key='task_queue',
                           body=message,
