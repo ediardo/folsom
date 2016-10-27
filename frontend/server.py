@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, jsonify
 import uuid
 import os
 import datetime
@@ -29,10 +29,17 @@ users = ['admin', 'user', 'anna', 'jake']
 def index():
     return render_template('base.html')
 
-@app.route('/login')
+
+@app.route('/login', methods=['POST'])
 # GET renders HTML login form
 def login():
-    return render_template('partials/login.html')
+    if request.json['username'] == 'admin' and request.json['password'] == 'admin':
+        response = jsonify(success=True, msg='')
+        response.status_code = 200
+    else:
+        response = jsonify(success=False, msg='Invalid credentials')
+        response.status_code = 401
+    return response
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -132,6 +139,7 @@ def view():
         print e
         resp = Response( status=500)
         return resp
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8181, debug=True)
