@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, jsonify
 import uuid
 import os
 import datetime
 import json
+import sys
+print sys.path
+sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 
 from database.database_handler import DatabaseHandler
 from database.models.house_record import HouseRecord
@@ -13,7 +16,7 @@ from pika.exceptions import ConnectionClosed, ChannelClosed
 app = Flask(__name__)
 app.debug = True
 
-upload_folder = '/opt/stack/folsom'
+upload_folder = os.path.dirname(os.path.realpath(__name__))
 app.config['upload_folder'] = upload_folder
 
 handler = DatabaseHandler('sqlite:///house_record.db')
@@ -26,10 +29,17 @@ users = ['admin', 'user', 'anna', 'jake']
 def index():
     return render_template('base.html')
 
-@app.route('/login')
+
+@app.route('/login', methods=['POST'])
 # GET renders HTML login form
 def login():
-    return render_template('partials/login.html')
+    if request.json['username'] == 'admin' and request.json['password'] == 'admin':
+        response = jsonify(success=True, msg='')
+        response.status_code = 200
+    else:
+        response = jsonify(success=False, msg='Invalid credentials')
+        response.status_code = 401
+    return response
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -130,5 +140,6 @@ def view():
         resp = Response( status=500)
         return resp
 
+
 if __name__ == "__main__":
-    app.run(host='192.168.33.12', port=8181, debug=True)
+    app.run(host='0.0.0.0', port=8181, debug=True)
