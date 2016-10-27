@@ -3,13 +3,14 @@
     <title></title>
     <script src="/static/node_modules/angular/angular.js"></script>  
     <script src="/static/node_modules/angular-route/angular-route.js"></script>  
+    <script src="/static/node_modules/angular-cookies/angular-cookies.min.js"></script>  
     <script src="/static/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>  
     <script src="/static/js/app.concat.js"></script>  
     <link rel="stylesheet" href="/static/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css/">
   </head>
 
-  <body cz-shortcut-listen="true">
+  <body cz-shortcut-listen="true" ng-controller="folsomCtrl">
 
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -23,7 +24,10 @@
             <li><a href="#">View</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="/login">Login</a></li>
+            <li>
+              <a href="/#" ng-show='loggedIn' ng-click="logout()">Logout</a>
+              <a href="/login" ng-hide='loggedIn'>Login</a>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
