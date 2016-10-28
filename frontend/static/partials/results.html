@@ -1,4 +1,12 @@
 <div ng-controller="resultsCtrl">
   <h1>Results</h1>
   <flash-message></flash-message>
+
+  <table ng-table="results" class="table table-bordered table-striped table-condensed">
+      <tr ng-repeat="row in $data track by row.id">
+        <td data-title="'Result'" filter="{ result: 'number' }" sortable="'result'">{{ row.result }}</td>
+        <td data-title="'Action'" filter="{ action: 'text' }" sortable="'action'">{{ row.action }}</td>
+      </tr>
+    </table>
+
 </div>

@@ -51,10 +51,12 @@ def login():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    import pdb
+    pdb.set_trace()
     file = request.files['file']
     # TODO: store file_type
-    action = request.form['action']
-    file_type = request.form['type']
+    action = request.form['type']
+    #file_type = request.form['type']
     # TODO: get username from cookie and store it as the author of record
     if file.content_type == 'text/csv':
         filename = file.filename
@@ -153,8 +155,12 @@ def view():
         return resp
 
 
+@app.route('/results', defaults={'username': None})
 @app.route('/results/<username>')
-def get_results(username="admin"):
+def get_results(username):
+    if username is None:
+        username = request.cookies.get('loggedin')
+
     try:
         bare_results = handler.get_data_for_user(username)
         results = [{"action": r.action, "result": decrypt(r.result)} for r in bare_results]
