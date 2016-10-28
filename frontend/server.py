@@ -52,7 +52,8 @@ def login():
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
-    # TODO: store file_type 
+    # TODO: store file_type
+    action = request.form['action']
     file_type = request.form['type']
     # TODO: get username from cookie and store it as the author of record
     if file.content_type == 'text/csv':
@@ -100,7 +101,7 @@ def upload():
             for r_id in record_ids:
                 data = {
                     "id": r_id,
-                    "action": "default"
+                    "action": action
                 }
                 message = json.dumps(data)
 
