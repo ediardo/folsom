@@ -28,7 +28,7 @@ class App():
             print id
             record = self.handler.get_record_by_id(id)
             results = process_record("default", record)
-            self.handler.save_result(results[1], results[0])
+            self.handler.save_result(results[0], results[1])
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
         channel.basic_qos(prefetch_count=1)
