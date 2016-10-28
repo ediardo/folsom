@@ -2,8 +2,15 @@ body {
   background-image: url(/static/images/cream_pixels.png);
 }
 
+body.index {
+  /*
+  background-image: url(/static/images/folsom-river.jpg);
+  background-size: cover;
+  */
+}
 body.login {
   background-image: url(/static/images/hipster-bg.jpg);
+  background-size: cover;
 }
 
 .panel {

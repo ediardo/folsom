@@ -11,6 +11,12 @@
           requiredAuth: true,
           activeMenu: 'index'
         })
+        .when('/results', {
+          templateUrl: '/static/partials/results.html',
+          controller: 'resultsCtrl',
+          requiredAuth: true,
+          activeMenu: 'results'
+        })
         .when('/upload', {
           templateUrl: '/static/partials/upload.html?anticache=',
           controller: 'uploadCtrl',
@@ -171,6 +177,22 @@
         };
       });
     };
+  };
+
+})();
+
+
+(function() {
+
+  'use strict';
+
+  angular
+    .module('folsom')
+    .controller('resultsCtrl', controller);
+
+  function controller($scope, apiService, $route) {
+    $scope.$route = $route;
+
   };
 
 })();

@@ -11,6 +11,12 @@
           requiredAuth: true,
           activeMenu: 'index'
         })
+        .when('/results', {
+          templateUrl: '/static/partials/results.html',
+          controller: 'resultsCtrl',
+          requiredAuth: true,
+          activeMenu: 'results'
+        })
         .when('/upload', {
           templateUrl: '/static/partials/upload.html?anticache=',
           controller: 'uploadCtrl',
