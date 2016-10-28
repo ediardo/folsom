@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 import pika
 import json
 from common.database_handler import DatabaseHandler

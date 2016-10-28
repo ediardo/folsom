@@ -31,6 +31,10 @@
         return $http.get('/viewall');
       }
 
+      this.getResults = function() {
+        return $http.get('/results')
+      }
+
     }]);
 })();
 

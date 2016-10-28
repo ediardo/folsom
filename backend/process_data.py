@@ -1,5 +1,5 @@
-import datetime
 from __future__ import division
+import datetime
 
 def process_record(action, record):
     today = datetime.date.today()
