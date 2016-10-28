@@ -7,8 +7,14 @@
     </div>
     <div class="panel-body">
       <form ng-submit="processUpload()">
-        <input type="file" name="csv" file-model="file" required>
-        <input type="submit" class="btn btn-default" value="Uploaasad">
+        <input type="file" file-model="file.file" required>
+
+        <select ng-model="file.type">
+          <option value="default">Defaut</option>
+          <option value="spaciousness">Spaciousness</option>
+        </select>
+
+        <input type="submit" class="btn btn-default" value="Upload">
       </form>
     </div>
   </div>

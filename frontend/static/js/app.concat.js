@@ -31,44 +31,6 @@
 
 
 (function() {
-  'use strict';
-
-  angular
-    .module('folsom')
-    .service('apiService', ['$http', function($http) {
-
-      var baseUrl = '/';
-      
-      this.uploadFile = function(file) {
-        var formData = new FormData()
-        formData.append('file', file)
-        return $http.post('/upload', formData, {
-          headers: { 'Content-Type': undefined }, 
-          transformRequest: angular.identity
-        });
-      }
-
-
-      this.loginUser = function(credentials) {
-        return $http({
-          method: 'POST',
-          url: '/login',
-          headers: { 'content-type' : 'application/json'},
-          data: JSON.stringify(credentials)
-        });
-      };
-
-      this.getRecords = function() {
-        return $http.get('/viewall');
-      }
-
-    }]);
-
-})();
-
-
-
-(function() {
   'use strict'
 
   angular
@@ -84,10 +46,12 @@
       return {
         restrict: 'A',
         link: function(scope, element, attrs) {
-          var model = $parse(attrs.fileModel),
-              modelSetter = model.assign;
-          
+          var model = $parse(attrs.fileModel);
+          var modelSetter = model.assign;
           element.bind('change', function() {
+            console.log(model);
+
+            console.log('changed');
             scope.$apply(function() {
               modelSetter(scope, element[0].files[0])
             });
@@ -96,6 +60,44 @@
       }
     }]);
 })();
+
+
+(function() {
+  'use strict';
+
+  angular
+    .module('folsom')
+    .service('apiService', ['$http', function($http) {
+
+      var baseUrl = '/';
+      
+      this.uploadFile = function(file) {
+        var formData = new FormData();
+        for (var key in file) {
+          formData.append(key, file[key]);
+        }
+        return $http.post('/upload', formData, {
+          headers: { 'Content-Type': undefined }, 
+          transformRequest: angular.identity
+        });
+      }
+
+      this.loginUser = function(credentials) {
+        return $http({
+          method: 'POST',
+          url: '/login',
+          headers: { 'content-type' : 'application/json'},
+          data: JSON.stringify(credentials)
+        });
+      };
+
+      this.getRecords = function() {
+        return $http.get('/viewall');
+      }
+
+    }]);
+})();
+
 
 
 (function() {
@@ -182,9 +184,9 @@
 
   function controller($scope, apiService, $route) {
     $scope.$route = $route;
+    $scope.file = {};
 
     $scope.processUpload = function() {
-      $scope.file = {}
       $scope.flash = {
         alert_type: 'info',
         message: 'Uploading your file now...'
