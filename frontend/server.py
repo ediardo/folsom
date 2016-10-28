@@ -1,16 +1,22 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, Response, jsonify
 import uuid
 import os
 import datetime
 import json
+import sys
+print sys.path
+sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 
 from database.database_handler import DatabaseHandler
 from database.models.house_record import HouseRecord
 
+import pika
+from pika.exceptions import ConnectionClosed, ChannelClosed
+
 app = Flask(__name__)
 app.debug = True
 
-upload_folder = '/opt/stack/folsom'
+upload_folder = os.path.dirname(os.path.realpath(__name__))
 app.config['upload_folder'] = upload_folder
 
 handler = DatabaseHandler('sqlite:///house_record.db')
@@ -23,10 +29,17 @@ users = ['admin', 'user', 'anna', 'jake']
 def index():
     return render_template('base.html')
 
-@app.route('/login')
+
+@app.route('/login', methods=['POST'])
 # GET renders HTML login form
 def login():
-    return render_template('partials/login.html')
+    if request.json['username'] == 'admin' and request.json['password'] == 'admin':
+        response = jsonify(success=True, msg='')
+        response.status_code = 200
+    else:
+        response = jsonify(success=False, msg='Invalid credentials')
+        response.status_code = 401
+    return response
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -67,6 +80,36 @@ def upload():
         #send messages to rabbitmq queue
         #for record in records:
         #    message = json.dumps({"uuid": record.id, "action": "default"})
+
+        # send messages to rabbitmq per each row saved in db
+
+        record_ids = [r.id for r in records]
+
+        try:
+            for r_id in record_ids:
+                data = {
+                    "id": r_id,
+                    "action": "default"
+                }
+                message = json.dumps(data)
+
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host='localhost'))
+                channel = connection.channel()
+
+                res = channel.queue_declare(queue='task_queue', durable=True)
+                channel.basic_publish(exchange='',
+                                      routing_key='task_queue',
+                                      body=message,
+                                      properties=pika.BasicProperties(
+                                          delivery_mode=2,
+                                      ))
+                print("Sent %r" % message)
+                print 'Messages in queue %d' % res.method.message_count
+                connection.close()
+        except (ConnectionClosed, ChannelClosed) as e:
+            print("Connecting with queue failed!")
+
         return resp
     else:
         data = json.dumps({"message": "Only csv is supported"})
@@ -97,5 +140,6 @@ def view():
         resp = Response( status=500)
         return resp
 
+
 if __name__ == "__main__":
-    app.run(host='192.168.33.12', port=8181, debug=True)
+    app.run(host='0.0.0.0', port=8181, debug=True)
