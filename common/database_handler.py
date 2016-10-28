@@ -30,8 +30,11 @@ class DatabaseHandler():
     def get_data_for_user(self, login):
         user_id = self.get_user_id_by_login(login)
         session = self.make_session()
-
-        results = session.query(HouseRecord).filter(HouseRecord.user_id == 1)
+        results = []
+        records = session.query(HouseRecord).filter(HouseRecord.user_id == user_id)
+        for r in records:
+            for res in r.results:
+                results.append(res)
         return results
 
     def save_user(self, username, pwd_hash):

@@ -1,0 +1,4 @@
+flask
+python-keystoneclient
+python-barbicanclient
+cryptography

@@ -2,8 +2,8 @@ import time
 import os
 import pika
 import json
-from database.database_handler import DatabaseHandler
-from database.models.house_record import HouseRecord
+from common.database_handler import DatabaseHandler
+from common.models.house_record import HouseRecord
 from process_data import process_record
 
 class App():

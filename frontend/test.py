@@ -7,8 +7,8 @@ import pika
 from pika.exceptions import ConnectionClosed, ChannelClosed
 from sqlalchemy.exc import IntegrityError
 
-from database.database_handler import DatabaseHandler
-from database.models.house_record import HouseRecord
+from common.database_handler import DatabaseHandler
+from common.models.house_record import HouseRecord
 
 handler = DatabaseHandler('sqlite:///house_record.db')
 #handler = DatabaseHandler('sqlite:///:memory:')
@@ -81,9 +81,10 @@ except (ConnectionClosed, ChannelClosed) as e:
     print("Connecting with queue failed!")
 
 #results
-results = ["a", "b", "c"]
+results = range(10)
 i = 0
 for r_id in record_ids:
     handler.save_result(results[i%len(results)], r_id)
+    i += 1
 
 handler.get_data_for_user(users[0])

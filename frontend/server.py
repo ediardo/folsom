@@ -4,11 +4,13 @@ import os
 import datetime
 import json
 import sys
+
 # we need this tmp 'hack' here
 sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 
-from database.database_handler import DatabaseHandler
-from database.models.house_record import HouseRecord
+from common.database_handler import DatabaseHandler
+from common.models.house_record import HouseRecord
+from common.encrypt_decrypt import *
 
 import pika
 from pika.exceptions import ConnectionClosed, ChannelClosed
@@ -143,9 +145,30 @@ def view():
         return resp
     except Exception as e:
         print e
-        resp = Response( status=500)
+        resp = Response(status=500)
         return resp
 
+
+@app.route('/results/<username>')
+def get_results(username="admin"):
+    try:
+        bare_results = handler.get_data_for_user(username)
+        results = [{"action": r.action, "result": decrypt(r.result)} for r in bare_results]
+        resp = Response(json.dumps(results), status=200, mimetype='application/json')
+    except Exception as e:
+        print e
+        resp = Response(status=500, response=str(e))
+    return resp
+
+
+def decrypt(cipher_text):
+    try:
+        plain = decrypt_fernet(cipher_text)
+    except Exception as e:
+        #means we're running locally
+        plain = cipher_text
+    finally:
+        return cipher_text
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8181, debug=True)
