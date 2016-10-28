@@ -7,23 +7,29 @@
 
       var baseUrl = '/';
       
-      this.uploadFile = function(data) {
-        return $http({
-          method: 'POST',
-          url: baseUrl + '/upload'
+      this.uploadFile = function(file) {
+        var formData = new FormData()
+        formData.append('file', file)
+        return $http.post('/upload', formData, {
+          headers: { 'Content-Type': undefined }, 
+          transformRequest: angular.identity
         });
       }
 
 
       this.loginUser = function(credentials) {
-        console.log(JSON.stringify(credentials));
         return $http({
           method: 'POST',
           url: '/login',
           headers: { 'content-type' : 'application/json'},
           data: JSON.stringify(credentials)
         });
+      };
+
+      this.getRecords = function() {
+        return $http.get('/viewall');
       }
+
     }]);
 
 })();

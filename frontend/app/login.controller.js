@@ -18,7 +18,11 @@
         $rootScope.loggedIn = true;
         $location.path('/');
       }, function(response) {
-        console.log('Bad Credentials'); 
+        console.log(response);
+        $scope.flash = {
+          alert_type: 'danger',
+          message: response.data.msg 
+        };
       });
     };
   };
