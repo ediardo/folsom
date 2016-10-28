@@ -9,19 +9,21 @@
 
     $scope.fakeLogin = function() {
       console.log('Attempting login')
+      
       apiService.loginUser({
-        username: $scope.username, 
+        user: $scope.user, 
         password: $scope.password
-      }).then(function(response) {
+      }).success(function(response) {
         // ULTRA INSECURE LOGIN IF THE USER CHANGES COOKIE VALUE
-        $cookies.put('loggedin', $scope.username);
+        $cookies.put('loggedin', $scope.user);
         $rootScope.loggedIn = true;
         $location.path('/');
-      }, function(response) {
+      })
+      .error(function(response) {
         console.log(response);
         $scope.flash = {
           alert_type: 'danger',
-          message: response.data.msg 
+          message: response.msg 
         };
       });
     };

@@ -1,15 +1,31 @@
 <div>
   <flash-message></flash-message>  
-<h1>Index</h1>
-  <table ng-table="tableParams" class="table table-bordered table-striped table-condensed">
-    <tr ng-repeat="row in $data track by row.id">
-      <td data-title="'Beds'" filter="{beds: 'number'}" sortable="'beds'">{{ row.beds }}</td>
-      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
-      <td data-title="'Baths'" filter="{ baths: 'number'}" sortable="'baths'">{{ row.baths}}</td>
-      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
-      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
-      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
-      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
-    </tr>
-  </table>
+<div class="container">
+  <div class="jumbotron">
+    <h1>Folsom App</h1> 
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a consequat ex. Suspendisse porta metus sed libero molestie tristique. Aliquam quis mauris et arcu placerat hendrerit pharetra in lacus. Suspendisse tincidunt purus dolor. Vestibulum varius quis sem eget dapibus.</p> 
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-6">
+      <div class="thumbnail">
+        <img src="/static/images/cloud.jpg" alt="...">
+        <div class="caption">
+          <h3>Upload reports</h3>
+          <p><a href="/upload" class="btn btn-default" role="button">Upload</a></p>
+        </div>
+      </div>
+    </div>
+   
+    <div class="col-xs-12 col-sm-6">
+      <div class="thumbnail">
+        <img src="/static/images/results.jpg" alt="...">
+        <div class="caption">
+          <h3>View results</h3>
+          <p><a href="/results" class="btn btn-default" role="button">Results</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 </div>

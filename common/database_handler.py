@@ -15,8 +15,11 @@ class DatabaseHandler():
 
     def get_pwd_hash_by_username(self, username):
         sesion = self.make_session()
-        passwd, = sesion.query(User.password).filter(User.username == username)
-        return passwd[0]
+        try:
+            passwd, = sesion.query(User.password).filter(User.username == username)
+            return passwd[0]
+        except:
+            return None
 
     def save_records(self, records):
         session = self.make_session()

@@ -11,6 +11,12 @@
           requiredAuth: true,
           activeMenu: 'index'
         })
+        .when('/results', {
+          templateUrl: '/static/partials/results.html',
+          controller: 'resultsCtrl',
+          requiredAuth: true,
+          activeMenu: 'results'
+        })
         .when('/upload', {
           templateUrl: '/static/partials/upload.html?anticache=',
           controller: 'uploadCtrl',
@@ -85,7 +91,7 @@
       this.loginUser = function(credentials) {
         return $http({
           method: 'POST',
-          url: '/login',
+          url: '/auth',
           headers: { 'content-type' : 'application/json'},
           data: JSON.stringify(credentials)
         });
@@ -153,22 +159,40 @@
 
     $scope.fakeLogin = function() {
       console.log('Attempting login')
+      
       apiService.loginUser({
-        username: $scope.username, 
+        user: $scope.user, 
         password: $scope.password
-      }).then(function(response) {
+      }).success(function(response) {
         // ULTRA INSECURE LOGIN IF THE USER CHANGES COOKIE VALUE
-        $cookies.put('loggedin', $scope.username);
+        $cookies.put('loggedin', $scope.user);
         $rootScope.loggedIn = true;
         $location.path('/');
-      }, function(response) {
+      })
+      .error(function(response) {
         console.log(response);
         $scope.flash = {
           alert_type: 'danger',
-          message: response.data.msg 
+          message: response.msg 
         };
       });
     };
+  };
+
+})();
+
+
+(function() {
+
+  'use strict';
+
+  angular
+    .module('folsom')
+    .controller('resultsCtrl', controller);
+
+  function controller($scope, apiService, $route) {
+    $scope.$route = $route;
+
   };
 
 })();
