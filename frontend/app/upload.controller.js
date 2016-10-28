@@ -8,9 +8,9 @@
 
   function controller($scope, apiService, $route) {
     $scope.$route = $route;
+    $scope.file = {};
 
     $scope.processUpload = function() {
-      $scope.file = {}
       $scope.flash = {
         alert_type: 'info',
         message: 'Uploading your file now...'

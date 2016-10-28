@@ -49,6 +49,8 @@ def login():
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files['file']
+    # TODO: store file_type 
+    file_type = request.form['type']
     # TODO: get username from cookie and store it as the author of record
     if file.content_type == 'text/csv':
         filename = file.filename
