@@ -13,6 +13,11 @@ class DatabaseHandler():
         Base.metadata.create_all(self.engine)
         self.make_session = sessionmaker(bind=self.engine)
 
+    def get_pwd_hash_by_username(self, username):
+        sesion = self.make_session()
+        passwd, = sesion.query(User.password).filter(User.username == username)
+        return passwd[0]
+
     def save_records(self, records):
         session = self.make_session()
         session.add_all(records)

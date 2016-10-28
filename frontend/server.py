@@ -4,6 +4,7 @@ import os
 import datetime
 import json
 import sys
+import hashlib
 
 # we need this tmp 'hack' here
 sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
@@ -162,6 +163,16 @@ def get_results(username="admin"):
         resp = Response(status=500, response=str(e))
     return resp
 
+@app.route('/auth', methods=['POST'])
+def auth_user():
+    data = json.loads(request.data)
+    user = data["user"]
+    passwd = data["password"]
+    passwd_hash = hashlib.sha256(passwd).hexdigest()
+    proper_hash = handler.get_pwd_hash_by_username(user)
+    if proper_hash != passwd_hash:
+        return Response(status=401)
+    return Response(status=200)
 
 def decrypt(cipher_text):
     try:

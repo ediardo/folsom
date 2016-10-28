@@ -17,7 +17,7 @@ handler = DatabaseHandler('sqlite:///house_record.db')
 users = ['admin', 'user', 'anna', 'jake']
 try:
     for u in users:
-        pwd_hash = hashlib.sha256("secret_pass_" + u).hexdigest()
+        pwd_hash = hashlib.sha256(u + "pass").hexdigest()
         handler.save_user(u, pwd_hash)
 except IntegrityError:
     #users already in db, recreating session
