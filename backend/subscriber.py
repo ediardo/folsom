@@ -1,9 +1,8 @@
-import time
 import os
 import pika
 import json
 from common.database_handler import DatabaseHandler
-from common.models.house_record import HouseRecord
+from common.encrypt_decrypt import *
 from process_data import process_record
 
 class App():
@@ -28,7 +27,7 @@ class App():
             print id
             record = self.handler.get_record_by_id(id)
             results = process_record(data["action"], record)
-            self.handler.save_result(results[0], results[1], action=data["action"])
+            self.handler.save_result(results[0], encrypt_fernet(results[1]) , action=data["action"])
             ch.basic_ack(delivery_tag = method.delivery_tag)
 
         channel.basic_qos(prefetch_count=1)
