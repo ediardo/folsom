@@ -5,7 +5,11 @@
     .controller('folsomCtrl',  controller);
 
 
-  function controller($scope, apiService, $cookies, $location) {
+  //controller.$inject = ['NgTableParams'];
+
+  function controller($scope, apiService, $cookies, $location, $route, NgTableParams) {
+    $scope.$route = $route;
+
     $scope.$on('$routeChangeStart', function(angularEvent, url) {
       console.log(url);
       if (url.requiredAuth && !$cookies.get('loggedin')) {
@@ -21,6 +25,16 @@
       $scope.loggedIn = false;
       $location.path('/login');
     }
+
+    $scope.tableParams = new NgTableParams({}, {
+      getData: function(params) {
+        return apiService.getRecords().then(function(response) {
+          return response.data.message
+        }, function(response) {
+
+        });
+      } 
+    });
   };
 
 })();

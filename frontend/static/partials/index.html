@@ -1,3 +1,15 @@
-<div ng-controller="mainCtrl">
+<div>
+  <flash-message></flash-message>  
 <h1>Index</h1>
+  <table ng-table="tableParams" class="table table-bordered table-striped table-condensed">
+    <tr ng-repeat="row in $data track by row.id">
+      <td data-title="'Beds'" filter="{beds: 'number'}" sortable="'beds'">{{ row.beds }}</td>
+      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
+      <td data-title="'Baths'" filter="{ baths: 'number'}" sortable="'baths'">{{ row.baths}}</td>
+      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
+      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
+      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
+      <td data-title="'Floors'" filter="{ floors: 'number'}" sortable="'floors'">{{ row.floors }}</td>
+    </tr>
+  </table>
 </div>

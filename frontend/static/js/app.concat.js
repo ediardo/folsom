@@ -2,22 +2,25 @@
   'use strict';
 
   angular
-    .module('folsom', ['ngRoute', 'ngCookies'])
+    .module('folsom', ['ngRoute', 'ngCookies', 'ngTable'])
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
       $routeProvider
         .when('/', {
           templateUrl: '/static/partials/index.html?anticache',
-          controller: 'mainCtrl',
-          requiredAuth: true
+          controller: 'folsomCtrl',
+          requiredAuth: true,
+          activeMenu: 'index'
         })
         .when('/upload', {
           templateUrl: '/static/partials/upload.html?anticache=',
           controller: 'uploadCtrl',
-          requiredAuth: true
+          requiredAuth: true,
+          activeMenu: 'upload'
         })
         .when('/login', {
           templateUrl: '/static/partials/login.html?anticache=',
-          controller: 'loginCtrl'
+          controller: 'loginCtrl',
+          activeMenu: 'login'
         })
 
       $locationProvider.html5Mode({ enabled: true, requireBase: false });
@@ -36,27 +39,63 @@
 
       var baseUrl = '/';
       
-      this.uploadFile = function(data) {
-        return $http({
-          method: 'POST',
-          url: baseUrl + '/upload'
+      this.uploadFile = function(file) {
+        var formData = new FormData()
+        formData.append('file', file)
+        return $http.post('/upload', formData, {
+          headers: { 'Content-Type': undefined }, 
+          transformRequest: angular.identity
         });
       }
 
 
       this.loginUser = function(credentials) {
-        console.log(JSON.stringify(credentials));
         return $http({
           method: 'POST',
           url: '/login',
           headers: { 'content-type' : 'application/json'},
           data: JSON.stringify(credentials)
         });
+      };
+
+      this.getRecords = function() {
+        return $http.get('/viewall');
       }
+
     }]);
 
 })();
 
+
+
+(function() {
+  'use strict'
+
+  angular
+    .module('folsom')
+    .directive('flashMessage', function() {
+
+      return {
+        templateUrl: '/static/partials/flash.html'
+      };
+
+    })
+    .directive('fileModel', ['$parse', function($parse) {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var model = $parse(attrs.fileModel),
+              modelSetter = model.assign;
+          
+          element.bind('change', function() {
+            scope.$apply(function() {
+              modelSetter(scope, element[0].files[0])
+            });
+          });
+        }
+      }
+    }]);
+})();
 
 
 (function() {
@@ -66,7 +105,11 @@
     .controller('folsomCtrl',  controller);
 
 
-  function controller($scope, apiService, $cookies, $location) {
+  //controller.$inject = ['NgTableParams'];
+
+  function controller($scope, apiService, $cookies, $location, $route, NgTableParams) {
+    $scope.$route = $route;
+
     $scope.$on('$routeChangeStart', function(angularEvent, url) {
       console.log(url);
       if (url.requiredAuth && !$cookies.get('loggedin')) {
@@ -82,6 +125,16 @@
       $scope.loggedIn = false;
       $location.path('/login');
     }
+
+    $scope.tableParams = new NgTableParams({}, {
+      getData: function(params) {
+        return apiService.getRecords().then(function(response) {
+          return response.data.message
+        }, function(response) {
+
+        });
+      } 
+    });
   };
 
 })();
@@ -107,22 +160,13 @@
         $rootScope.loggedIn = true;
         $location.path('/');
       }, function(response) {
-        console.log('Bad Credentials'); 
+        console.log(response);
+        $scope.flash = {
+          alert_type: 'danger',
+          message: response.data.msg 
+        };
       });
     };
-  };
-
-})();
-
-
-(function() {
-
-  angular
-    .module('folsom')
-    .controller('mainCtrl',  controller);
-
-  function controller($scope) {
-    console.log('main');
   };
 
 })();
@@ -136,13 +180,28 @@
     .module('folsom')
     .controller('uploadCtrl', controller);
 
-  function controller($scope, apiService) {
+  function controller($scope, apiService, $route) {
+    $scope.$route = $route;
 
     $scope.processUpload = function() {
-      console.log('upload1');
-      apiService.uploadFile('a');
+      $scope.file = {}
+      $scope.flash = {
+        alert_type: 'info',
+        message: 'Uploading your file now...'
+      };
+      console.log($scope.file);
+      apiService.uploadFile($scope.file).then(function(response) {
+        $scope.flash = {
+          alert_type: 'success',
+          message: 'Your file was uploaded successfully!'
+        };
+      }, function(response) {
+        $scope.flash = {
+          alert_type: 'danger',
+          message: response.data.message 
+        };
+      });
     }
-    
   };
 
 })();

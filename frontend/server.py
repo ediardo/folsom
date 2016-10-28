@@ -4,7 +4,7 @@ import os
 import datetime
 import json
 import sys
-print sys.path
+# we need this tmp 'hack' here
 sys.path.append(os.path.dirname(os.path.realpath(__name__)) + '/../')
 
 from database.database_handler import DatabaseHandler
@@ -31,9 +31,13 @@ def index():
 
 
 @app.route('/login', methods=['POST'])
-# GET renders HTML login form
 def login():
-    if request.json['username'] == 'admin' and request.json['password'] == 'admin':
+    username = request.json.get('username', '')
+    password = request.json.get('password', '')
+
+    # TODO: do db query to check if credentials are correct
+    # use hashlib.sha256(password).hexdigest()
+    if username  == 'admin' and password == 'admin':
         response = jsonify(success=True, msg='')
         response.status_code = 200
     else:
@@ -41,9 +45,11 @@ def login():
         response.status_code = 401
     return response
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
-    file = request.files['csv']
+    file = request.files['file']
+    # TODO: get username from cookie and store it as the author of record
     if file.content_type == 'text/csv':
         filename = file.filename
         try:

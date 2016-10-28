@@ -28,6 +28,8 @@
   "devDependencies": {
     "angular-cookies": "^1.5.8",
     "bootstrap": "^3.3.7",
-    "grunt-contrib-copy": "^1.0.0"
+    "grunt-contrib-copy": "^1.0.0",
+    "jquery": "^3.1.1",
+    "ng-table": "^2.1.0"
   }
 }
