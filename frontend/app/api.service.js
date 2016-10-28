@@ -21,7 +21,7 @@
       this.loginUser = function(credentials) {
         return $http({
           method: 'POST',
-          url: '/login',
+          url: '/auth',
           headers: { 'content-type' : 'application/json'},
           data: JSON.stringify(credentials)
         });

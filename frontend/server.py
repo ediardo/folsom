@@ -171,9 +171,9 @@ def auth_user():
     passwd = data["password"]
     passwd_hash = hashlib.sha256(passwd).hexdigest()
     proper_hash = handler.get_pwd_hash_by_username(user)
-    if proper_hash != passwd_hash:
-        return Response(status=401)
-    return Response(status=200)
+    if proper_hash and proper_hash == passwd_hash:
+        return Response(status=200)
+    return Response(json.dumps({'msg': 'Invalid Credentials'}), status=401)
 
 def decrypt(cipher_text):
     try:
